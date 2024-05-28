@@ -47,22 +47,22 @@
                 }
             }
 
-            function ask(question) {
+            async function ask(question) {
                 message('human', question);
                 $('prompt').blur();
                 const url = '/chat?' + encodeURIComponent(question);
-                fetch(url).then(response => {
+                try {
+                    const response = await fetch(url)
                     if (response.status !== 200) {
                         throw new Error('Unable to get an answer!')
                     }
-                    return response.text();
-                }).then(answer => {
+                    const answer = await response.text();
                     console.log('Answer:', answer);
                     message('assistant', answer);
                     focusInput();
-                }).catch(error => {
+                } catch (error) {
                     message('panic', error);
-                });
+                }
             }
 
             $('prompt').addEventListener('keydown', function handleKeyInput(event) {

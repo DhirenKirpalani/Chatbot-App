@@ -11,7 +11,11 @@ async function llama(question) {
     const body = JSON.stringify({
         model: 'orca-mini',
         prompt: question,
-        options: {},
+        options: {
+            num_predict: 200,
+            temperature: 0.8,
+            top_k: 20,
+        },
         stream: false
     });
     const request = { method, headers, body };
@@ -19,6 +23,14 @@ async function llama(question) {
     const { response } = await res.json();
 
     return response.trim();
+}
+
+function createPrompt(question) {
+    return `
+    This is a conversation between User and Llama, a friendly chatbot. Llama is helpful, kind, honest, and never fails to answer any requests immediately, with precision, and concisely in 10 words or less.
+   User: ${question}
+   Llama:
+    `
 }
 
 async function handler(req, res) {
@@ -33,7 +45,7 @@ async function handler(req, res) {
         const parsedUrl = new URL(`http://localhost${url}`);
         const { search } = parsedUrl;
         const question = decodeURIComponent(search.substring(1));
-        const answer = await llama(question);
+        const answer = await llama(createPrompt(question));
         console.log(`Question: ${question}, Answer: ${answer}`);
         res.writeHead(200).end(answer);
     } else {
