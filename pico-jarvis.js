@@ -36,12 +36,12 @@ function createPrompt(question) {
 async function handler(req, res) {
     const { url } = req;
 
-    if(url === '/health') {
+    if (url === '/health') {
         res.writeHead(200).end('OK');
-    } else if(url === "/" || url === "/index.html") {
-        res.writeHead(200, { 'Content-Type': 'text/html'});
+    } else if (url === "/" || url === "/index.html") {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(fs.readFileSync('./index.html'));
-    } else if(url.startsWith('/chat')) {
+    } else if (url.startsWith('/chat')) {
         const parsedUrl = new URL(`http://localhost${url}`);
         const { search } = parsedUrl;
         const question = decodeURIComponent(search.substring(1));
